@@ -116,7 +116,7 @@ fi
 if [[ ${CMS_FRAMEWORK} == "drupal" ]]
 then
 
-    PLUGIN_UPDATES=$(terminus drush ${SITE_NAME}.${TERMINUS_ENV} -- pm-updatestatus --format=list --check-disabled | grep -v ok)
+    PLUGIN_UPDATES=$(terminus drush ${SITE_UUID}.${MULTIDEV} -- pm-updatestatus --format=list --check-disabled | grep -v ok)
 
     echo $PLUGIN_UPDATES
 
@@ -127,15 +127,15 @@ then
     else
         # update WordPress plugins or Drupal modules
         echo -e "\nUpdating ${CMS_CONTRIB}s on the ${MULTIDEV} multidev for $SITE_NAME..."
-        terminus -n drush $SITE_NAME.$MULTIDEV -- pm-updatecode --no-core --yes
+        terminus -n drush $SITE_UUID.$MULTIDEV -- pm-updatecode --no-core --yes
 
         # wake the site environment before committing code
         echo -e "\nWaking the ${MULTIDEV} multidev..."
-        terminus env:wake $SITE_NAME.$MULTIDEV
+        terminus env:wake $SITE_UUID.$MULTIDEV
 
         # committing updated WordPress plugins or Drupal modules
         echo -e "\nCommitting ${CMS_CONTRIB} updates on the ${MULTIDEV} multidev for $SITE_NAME..."
-        terminus env:commit $SITE_NAME.$MULTIDEV --force --message="update ${CMS_CONTRIB}"
+        terminus env:commit $SITE_UUID.$MULTIDEV --force --message="update ${CMS_CONTRIB}"
         UPDATES_APPLIED=true
     fi
 fi
